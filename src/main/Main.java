@@ -18,5 +18,8 @@ public class Main {
 		
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
+		
+		// Once the window is created we call launchGame method which starts the thread and call the run method  
+		gp.launchGame();
 	}
 }
