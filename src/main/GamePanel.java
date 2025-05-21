@@ -3,6 +3,7 @@ package main;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
@@ -13,6 +14,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int HEIGHT = 800;
 	final int FPS = 60;
 	Thread gameThread;  // To use this thread we implement runnable interface
+	Board board = new Board();
 	
 	public GamePanel() {
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -58,6 +60,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public void paintComponent(Graphics g) { 
 		//paintComponent is a method in JComponent that JPanel inherits and is used to draw objects on the panel
 		super.paintComponent(g);
+		
+		// draw method receives this Graphics2D
+		Graphics2D g2 = (Graphics2D)g;
+		
+		// call the draw method in the board class
+		board.draw(g2);
 	}
 
 }
