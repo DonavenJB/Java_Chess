@@ -31,7 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
 		public void run() {
 			
 			// GAME LOOP
-			double drawInterval = 1000000000/FPS;
+			double drawInterval = 1000000000.0/FPS; // ns per frame
 			double delta = 0;
 			// Here we use System.nanoTime() to measure the elapsed time and call update and repaint methods once every 1/60 of a second
 			long lastTime = System.nanoTime(); 
