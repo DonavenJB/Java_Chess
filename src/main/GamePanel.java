@@ -61,11 +61,15 @@ public class GamePanel extends JPanel implements Runnable {
 		//paintComponent is a method in JComponent that JPanel inherits and is used to draw objects on the panel
 		super.paintComponent(g);
 		
+		// Debugging log: If height is < 800, the bottom row is outside the clip.
+	    System.out.println("Panel size: " + getWidth() + "×" + getHeight()); // <- check height
+
 		// draw method receives this Graphics2D
 		Graphics2D g2 = (Graphics2D)g;
 		
 		// call the draw method in the board class
-		board.draw(g2);
+		board.draw(g2, getWidth(), getHeight()); // pass panelWidth, panelHeight
+
 	}
 
 }

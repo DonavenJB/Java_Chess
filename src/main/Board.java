@@ -13,9 +13,12 @@ public class Board {
 	public static final int HALF_SQUARE_SIZE = SQUARE_SIZE/2;
 	
 	//Here we create a draw method and receive Graphic2D (called from paint component)
-	public void draw(Graphics2D g2) { 
+	public void draw(Graphics2D g2, int panelWidth, int panelHeight) { 
 		// We use this Graphics2D class and draw the board
-		
+
+		// Scale squares to the panel’s actual size so all 8 rows are visible 
+		int effectiveSquare = Math.min(SQUARE_SIZE,
+                Math.min(panelWidth / MAX_COL, panelHeight / MAX_ROW));		
 		int c = 0;
 		for(int row = 0; row < MAX_ROW; row++) {
 			// Here we increase this column one by one
@@ -35,7 +38,7 @@ public class Board {
 				// we draw a square one by one (x, y, width, height)
 				// we get the x and the y by multiplying the col and the row by SQUARE_SIZE
 				// width and height is SQUARE_SIZE
-				g2.fillRect(col*SQUARE_SIZE, row*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+				g2.fillRect(col*effectiveSquare, row*effectiveSquare, effectiveSquare, effectiveSquare);
 			}
 			
 			// Reset the change so that c becomes 1 again after column loop completes
