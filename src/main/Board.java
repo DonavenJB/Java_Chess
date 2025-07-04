@@ -4,50 +4,45 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class Board {
-	
-	// The chess board consists of 8 x 8 squares and I set the single square size to 100 so a single square is 100 x 100 pixels 
-	// The board size is 800 x 800 
-	final int MAX_COL = 8;
-	final int MAX_ROW = 8;
-	public static final int SQUARE_SIZE = 100;
-	public static final int HALF_SQUARE_SIZE = SQUARE_SIZE/2;
-	
-	//Here we create a draw method and receive Graphic2D (called from paint component)
-	public void draw(Graphics2D g2, int panelWidth, int panelHeight) { 
-		// We use this Graphics2D class and draw the board
 
-		// Scale squares to the panel’s actual size so all 8 rows are visible 
-		int effectiveSquare = Math.min(SQUARE_SIZE,
-                Math.min(panelWidth / MAX_COL, panelHeight / MAX_ROW));		
-		int c = 0;
-		for(int row = 0; row < MAX_ROW; row++) {
-			// Here we increase this column one by one
-			// Once this column loop is done then we increase row by one then go to the next row
-			
-			for(int col = 0; col < MAX_COL; col++) {
-				
-				// We need to switch colors as drawing squares so we set two colors on this Graphics2D
-				if(c == 0) {
-					g2.setColor(new Color(210,165,125));
-					c = 1; // Every time we draw a square, we switch the color
-				}
-				else {
-					g2.setColor(new Color(175,115,70));
-					c = 0; // Every time we draw a square, we switch the color
-				}
-				// we draw a square one by one (x, y, width, height)
-				// we get the x and the y by multiplying the col and the row by SQUARE_SIZE
-				// width and height is SQUARE_SIZE
-				g2.fillRect(col*effectiveSquare, row*effectiveSquare, effectiveSquare, effectiveSquare);
-			}
-			
-			// Reset the change so that c becomes 1 again after column loop completes
-			if(c == 0) {
-				c = 1;
-			}
-			else {
-				c = 0;
-			}
-		}
-	}
+    // The chess board consists of 8 x 8 squares and I set the single square size to 100 so a single square is 100 x 100 pixels 
+    // The board size is 800 x 800 
+    final int MAX_COL = 8;
+    final int MAX_ROW = 8;
+    public static final int SQUARE_SIZE = 100;
+    public static final int HALF_SQUARE_SIZE = SQUARE_SIZE/2;
+
+    // create a draw method and receive Graphic2D, called from paint component
+    public void draw(Graphics2D g2, int panelWidth, int panelHeight) { 
+        // use the unified tile computed by GamePanel so board and pieces match
+        int effectiveSquare = GamePanel.TILE;
+
+        int c = 0; // color toggle, 0 light, 1 dark
+        for(int row = 0; row < MAX_ROW; row++) {
+
+            for(int col = 0; col < MAX_COL; col++) {
+
+                // switch colors as squares are drawn
+                if(c == 0) {
+                    g2.setColor(new Color(210,165,125));
+                    c = 1; // toggle after each square
+                }
+                else {
+                    g2.setColor(new Color(175,115,70));
+                    c = 0; // toggle after each square
+                }
+
+                // draw one square, grid position times tile size
+                g2.fillRect(col*effectiveSquare, row*effectiveSquare, effectiveSquare, effectiveSquare);
+            }
+
+            // flip starting color at the next row
+            if(c == 0) {
+                c = 1;
+            }
+            else {
+                c = 0;
+            }
+        }
+    }
 }
