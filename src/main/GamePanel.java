@@ -142,7 +142,7 @@ public class GamePanel extends JPanel implements Runnable {
 		// draw board using the same tile
 		board.draw(g2, getWidth(), getHeight());
 
-		// draw pieces after the board, ensures pieces render on top
+		// draw the pieces after the board, ensures pieces render on top
 		for(Piece p : simPieces) {
 			p.draw(g2);
 		}
