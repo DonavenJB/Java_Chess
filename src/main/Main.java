@@ -1,5 +1,5 @@
 package main;
-// Stopped at 13:17
+
 import javax.swing.JFrame;
 
 public class Main {
