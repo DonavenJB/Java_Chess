@@ -15,7 +15,7 @@ public class Piece {
     public int col, row, preCol, preRow; // grid coordinates, pre values useful for undo or simulation
     public int color;
     public Piece hittingP;
-    
+    public boolean moved;
 
     public Piece(int color, int col, int row) {
 
@@ -75,6 +75,7 @@ public class Piece {
     	y = getY(row);
     	preCol = getCol(x);
     	preRow = getRow(y);
+    	moved = true;
     }
     public void resetPosition() {
     	col = preCol;
@@ -82,7 +83,12 @@ public class Piece {
     	x = getX(col);
     	y = getY(row);
     }
-    
+    public boolean isSameSquare(int targetCol, int targetRow) {
+    	if(targetCol == preCol && targetRow == preRow) {
+    		return true;
+    	}
+    	return false;
+    }
     public Piece getHittingP(int targetCol, int targetRow) {
     	for(Piece piece : GamePanel.simPieces) {
     		if(piece.col == targetCol && piece.row == targetRow && piece != this) {
@@ -110,6 +116,110 @@ public class Piece {
     	
     	return false;
     }
+    public boolean canMove(int targetCol, int targetRow) {
+        return false;
+    }
+    public boolean isWithinBoard(int targetCol, int targetRow) {
+    	if(targetCol >= 0 && targetCol <= 7 && targetRow >= 0 && targetRow <= 7) {
+    		return true;
+    	}
+    	return false;
+    }
+    public boolean pieceIsOnStraightLine(int targetCol, int targetRow) {
+
+        // When this piece is moving to the left (same row, decreasing col)
+        for (int c = preCol - 1; c > targetCol; c--) {
+            for (Piece piece : GamePanel.simPieces) {
+                if (piece.col == c && piece.row == targetRow) {
+                    hittingP = piece;
+                    return true;
+                }
+            }
+        }
+
+        // When this piece is moving to the right (same row, increasing col)
+        for (int c = preCol + 1; c < targetCol; c++) {
+            for (Piece piece : GamePanel.simPieces) {
+                if (piece.col == c && piece.row == targetRow) {
+                    hittingP = piece;
+                    return true;
+                }
+            }
+        }
+
+        // When this piece is moving up (same col, decreasing row)
+        for (int r = preRow - 1; r > targetRow; r--) {
+            for (Piece piece : GamePanel.simPieces) {
+                if (piece.col == targetCol && piece.row == r) {
+                    hittingP = piece;
+                    return true;
+                }
+            }
+        }
+
+        // When this piece is moving down (same col, increasing row)
+        for (int r = preRow + 1; r < targetRow; r++) {
+            for (Piece piece : GamePanel.simPieces) {
+                if (piece.col == targetCol && piece.row == r) {
+                    hittingP = piece;
+                    return true;
+                }
+            }
+        }
+
+        // No piece found on the straight path
+        return false;
+    }
+    public boolean pieceIsOnDiagonalLine(int targetCol, int targetRow) {
+    	if(targetRow < preRow) {
+    		// Up left
+    		for(int c = preCol-1; c > targetCol; c--) {
+    			int diff = Math.abs(c - preCol);
+    			for(Piece piece : GamePanel.simPieces) {
+    				if(piece.col == c && piece.row == preRow - diff) {
+    					hittingP = piece;
+    					return true;
+    				}
+    			}
+    		}
+    		// Up right
+    		for(int c = preCol+1; c < targetCol; c++) {
+    			int diff = Math.abs(c - preCol);
+    			for(Piece piece : GamePanel.simPieces) {
+    				if(piece.col == c && piece.row == preRow - diff) {
+    					hittingP = piece;
+    					return true;
+    				}
+    			}
+    		}
+    	}
+    	
+    	if(targetRow > preRow) {
+    		// Down left
+    		for(int c = preCol-1; c > targetCol; c--) {
+    			int diff = Math.abs(c - preCol);
+    			for(Piece piece : GamePanel.simPieces) {
+    				if(piece.col == c && piece.row == preRow + diff) {
+    					hittingP = piece;
+    					return true;
+    				}
+    			}
+    		}
+    		// Down right
+    		for(int c = preCol+1; c < targetCol; c++) {
+    			int diff = Math.abs(c - preCol);
+    			for(Piece piece : GamePanel.simPieces) {
+    				if(piece.col == c && piece.row == preRow + diff) {
+    					hittingP = piece;
+    					return true;
+    				}
+    			}
+    		}
+    		
+    	}
+    	return false;
+    }
+
     public void draw(Graphics2D g2) {
         // Initialize pixel coordinates from current grid on first draw only.
         // Do NOT overwrite every frame; simulate() updates x/y while dragging.
@@ -120,15 +230,5 @@ public class Piece {
 
         // draw the image scaled to the current tile
         g2.drawImage(image, x, y, GamePanel.TILE, GamePanel.TILE, null);
-    }
-
-    public boolean canMove(int targetCol, int targetRow) {
-        return false;
-    }
-    public boolean isWithinBoard(int targetCol, int targetRow) {
-    	if(targetCol >= 0 && targetCol <= 7 && targetRow >= 0 && targetRow <= 7) {
-    		return true;
-    	}
-    	return false;
     }
 }
