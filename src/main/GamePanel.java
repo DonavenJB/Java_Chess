@@ -187,6 +187,7 @@ public class GamePanel extends JPanel implements Runnable {
 						// Update the piece list in case a piece has been captured and removed during the simulation
 						copyPieces(simPieces, pieces);
 						activeP.updatePosition();
+						activeP = null; // clear active piece after a valid move
 					}
 					else {
 						// The move is not valid so reset everything
