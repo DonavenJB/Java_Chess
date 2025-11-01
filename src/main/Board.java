@@ -5,12 +5,9 @@ import java.awt.Graphics2D;
 
 public class Board {
 
-    // The chess board consists of 8 x 8 squares and I set the single square size to 100 so a single square is 100 x 100 pixels 
-    // The board size is 800 x 800 
+    // The chess board consists of 8 x 8 squares
     final int MAX_COL = 8;
     final int MAX_ROW = 8;
-    public static final int SQUARE_SIZE = 100;
-    public static final int HALF_SQUARE_SIZE = SQUARE_SIZE/2;
 
     // create a draw method and receive Graphic2D, called from paint component
     public void draw(Graphics2D g2, int panelWidth, int panelHeight) { 

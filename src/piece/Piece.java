@@ -33,7 +33,7 @@ public class Piece {
         BufferedImage image = null;
 
         try {
-            // load PNG resource from classpath, extension added here
+            // load PNG resource from classpath
             image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
 
         } catch(IOException e) {
@@ -53,9 +53,12 @@ public class Piece {
     }
 
     public void draw(Graphics2D g2) {
-        // recompute pixel coordinates from current grid coordinates each frame
-        x = getX(col);
-        y = getY(row);
+        // Initialize pixel coordinates from current grid on first draw only.
+        // Do NOT overwrite every frame; simulate() updates x/y while dragging.
+        if (x == 0 && y == 0) {
+            x = getX(col);
+            y = getY(row);
+        }
 
         // draw the image scaled to the current tile
         g2.drawImage(image, x, y, GamePanel.TILE, GamePanel.TILE, null);
