@@ -51,6 +51,21 @@ public class Piece {
     public int getY(int row) {
         return row * GamePanel.TILE;
     }
+    
+    public int getCol(int xPxTopLeft) {
+        return Math.max(0, Math.min(7, (xPxTopLeft + GamePanel.TILE/2) / GamePanel.TILE));
+    }
+    public int getRow(int yPxTopLeft) {
+        return Math.max(0, Math.min(7, (yPxTopLeft + GamePanel.TILE/2) / GamePanel.TILE));
+    }
+    
+    public void updatePosition() {
+    	
+    	x = getX(col);
+    	y = getY(row);
+    	preCol = getCol(x);
+    	preRow = getRow(y);
+    }
 
     public void draw(Graphics2D g2) {
         // Initialize pixel coordinates from current grid on first draw only.

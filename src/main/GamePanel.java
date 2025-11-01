@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -169,11 +170,22 @@ public class GamePanel extends JPanel implements Runnable {
 				simulate();
 			}
 		}
+		
+		////// MOUSE BUTTON RELEASED //////
+		if(mouse.pressed == false) {
+			if(activeP != null) {
+				activeP.updatePosition();
+				activeP = null;
+			}
+		}
 	}
 	private void simulate() {
 		// If a piece is being held, update its position 
 		activeP.x = mouse.x - TILE/2;
 		activeP.y = mouse.y - TILE/2;
+		activeP.col = activeP.getCol(activeP.x);
+		activeP.row = activeP.getRow(activeP.y);
+		
 		System.out.printf("[Sim] %s at px=(%d,%d)%n",
 				activeP.getClass().getSimpleName(), activeP.x, activeP.y);
 	}
@@ -202,6 +214,13 @@ public class GamePanel extends JPanel implements Runnable {
 		for(Piece p : simPieces) {
 			if (p != activeP) p.draw(g2); // draw everything except the held piece
 		}
-		if (activeP != null) activeP.draw(g2); // draw held piece last
+		if (activeP != null) {
+			g2.setColor(Color.white);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+			g2.fillRect(activeP.col*TILE, activeP.row*TILE, TILE, TILE);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+			
+			activeP.draw(g2); // draw held piece last
+		}
 	}
 }
