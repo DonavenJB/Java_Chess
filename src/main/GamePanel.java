@@ -3,8 +3,10 @@ package main;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -35,6 +37,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static ArrayList<Piece> pieces = new ArrayList<>();
 	public static ArrayList<Piece> simPieces = new ArrayList<>();
 	Piece activeP;
+	public static Piece castlingP;
 	
 	//COLOR
 	public static final int WHITE = 0;
@@ -184,10 +187,16 @@ public class GamePanel extends JPanel implements Runnable {
 				if(activeP != null) {
 					if(validSquare) {
 						
+						// MOVE CONFIRMED
+						
+						
 						// Update the piece list in case a piece has been captured and removed during the simulation
 						copyPieces(simPieces, pieces);
 						activeP.updatePosition();
-						activeP = null; // clear active piece after a valid move
+						if(castlingP != null) {
+							castlingP.updatePosition();
+						}
+						changePlayer();
 					}
 					else {
 						// The move is not valid so reset everything
@@ -208,6 +217,13 @@ public class GamePanel extends JPanel implements Runnable {
 		// This is basically for restoring the removed piece during the simulation
 		copyPieces(pieces, simPieces);
 		
+		// Reset the castling piece's position
+		if(castlingP != null) {
+			castlingP.col = castlingP.preCol;
+			castlingP.x = castlingP.getX(castlingP.col);
+			castlingP = null;
+		}
+		
 		// If a piece is being held, update its position 
 		activeP.x = mouse.x - TILE/2;
 		activeP.y = mouse.y - TILE/2;
@@ -223,13 +239,37 @@ public class GamePanel extends JPanel implements Runnable {
 				simPieces.remove(activeP.hittingP.getIndex());
 			}
 			
+			checkCastling();
+			
 			validSquare = true;
 		}
 		
 		System.out.printf("[Sim] %s at px=(%d,%d)%n",
 				activeP.getClass().getSimpleName(), activeP.x, activeP.y);
 	}
-
+	private void checkCastling() {
+		
+		if(castlingP != null) {
+			if(castlingP.col == 0) {
+				castlingP.col += 3;
+			}
+			else if(castlingP.col == 7) {
+				castlingP.col -= 2;
+			}
+			castlingP.x = castlingP.getX(castlingP.col);
+		}
+	}
+	private void changePlayer() {
+		
+		if(currentColor == WHITE) {
+			currentColor = BLACK;
+		}
+		else {
+			currentColor = WHITE;
+		}
+		activeP = null;
+	}
+	
 	// paint component handles all drawing, board then pieces then messages
 	@Override
 	public void paintComponent(Graphics g) { 
@@ -264,6 +304,18 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 			
 			activeP.draw(g2); // draw held piece last
+		}
+		
+		// Status Messages
+		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g2.setFont(new Font("Book Antiqua", Font.PLAIN, 40));
+		g2.setColor(Color.white);
+		
+		if(currentColor == WHITE) {
+			g2.drawString("White's turn", 840, 550);
+		}
+		else {
+			g2.drawString("Black's turn", 840, 250);
 		}
 	}
 }
